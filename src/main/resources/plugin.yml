@@ -1,0 +1,11 @@
+main: me.dewrs.ProtectionPvP
+name: ProtectionPvP
+version: 1.0
+api-version: 1.13
+author: dewrs
+depend: [ProtocolLib]
+
+commands:
+  protectionpvp:
+    description: Main Command
+    aliases: [protepvp]
