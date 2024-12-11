@@ -14,6 +14,7 @@ public class ConfigManager {
     private int distanceZonePvP;
     private boolean glassWallsEnabled;
     private boolean protePlayersCanEnterPvPZones;
+    private boolean proteOnFirstJoin;
     public ConfigManager(ProtectionPvP plugin){
         this.plugin = plugin;
         customConfig = new CustomConfig("config.yml", null, plugin);
@@ -26,9 +27,10 @@ public class ConfigManager {
         protectionTime = config.getInt("settings.time_protection");
         nameWand = config.getString("wand_selector.name");
         loreWand = config.getStringList("wand_selector.lore");
-        distanceZonePvP = config.getInt("settings.block_distance_zone_pvp");
+        distanceZonePvP = config.getInt("settings.block_distance_to_see_walls");
         glassWallsEnabled = config.getBoolean("settings.glass_walls_enabled");
         protePlayersCanEnterPvPZones = config.getBoolean("settings.prote_players_can_enter_pvp_zones");
+        proteOnFirstJoin = config.getBoolean("settings.protection_on_first_join");
     }
 
     public void reloadConfig(){
@@ -58,5 +60,9 @@ public class ConfigManager {
 
     public boolean isProtePlayersCanEnterPvPZones() {
         return protePlayersCanEnterPvPZones;
+    }
+
+    public boolean isProteOnFirstJoin() {
+        return proteOnFirstJoin;
     }
 }

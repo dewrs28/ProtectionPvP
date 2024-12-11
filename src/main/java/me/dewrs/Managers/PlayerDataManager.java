@@ -58,14 +58,18 @@ public class PlayerDataManager {
             playerData.setName(player.getName());
             players.add(playerData);
             plugin.getUserDataManager().writeInitialValues(playerData);
-            toggleProtectionPlayer(playerData,true);
-            if (plugin.getConfigManager().isGlassWallsEnabled()) {
-                ArrayList<ZonePvP> nearbyZones = plugin.getZonesManager().getNearbyZones(player.getLocation());
-                plugin.getZoneViewerManager().updatePlayerZones(player, nearbyZones);
+            if(plugin.getConfigManager().isProteOnFirstJoin()) {
+                toggleProtectionPlayer(playerData, true);
+                if (plugin.getConfigManager().isGlassWallsEnabled()) {
+                    ArrayList<ZonePvP> nearbyZones = plugin.getZonesManager().getNearbyZones(player.getLocation());
+                    plugin.getZoneViewerManager().updatePlayerZones(player, nearbyZones);
+                }
+                if (!plugin.getConfigManager().isProtePlayersCanEnterPvPZones()) {
+                    plugin.getZonesManager().kickPlayerOfActualZone(player);
+                }
+                return;
             }
-            if(!plugin.getConfigManager().isProtePlayersCanEnterPvPZones()){
-                plugin.getZonesManager().kickPlayerOfActualZone(player);
-            }
+            toggleProtectionPlayer(playerData, false);
         }
     }
 

@@ -1,6 +1,7 @@
 settings:
+  protection_on_first_join: true
   time_protection: 120
-  block_distance_zone_pvp: 5
+  block_distance_to_see_walls: 5
   prote_players_can_enter_pvp_zones: false
   glass_walls_enabled: true
 wand_selector:

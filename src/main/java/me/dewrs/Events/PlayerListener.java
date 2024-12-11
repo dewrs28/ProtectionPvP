@@ -24,11 +24,9 @@ import java.util.ArrayList;
 
 public class PlayerListener implements Listener {
     private ProtectionPvP plugin;
-    ProtocolLibHook protocolLibHook;
 
     public PlayerListener(ProtectionPvP plugin) {
         this.plugin = plugin;
-        protocolLibHook = new ProtocolLibHook(plugin);
     }
 
     @EventHandler
