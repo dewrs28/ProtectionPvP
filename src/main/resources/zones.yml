@@ -1,1 +1,3 @@
+#It is requested NOT to modify this file manually
+#The changes you make here will not take effect if you reload the plugin, try to edit everything from the game to avoid errors
 pvp_zones: []

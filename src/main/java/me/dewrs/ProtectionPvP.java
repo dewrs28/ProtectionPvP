@@ -61,8 +61,8 @@ public class ProtectionPvP extends JavaPlugin {
                 playerDataManager.setProtectionTime(p, playerDataManager.getNewTimeProtectedPlayer(p));
             }
         }
-        Bukkit.getConsoleSender().sendMessage(prefix+ColoredMessage.setColor("Has been disabled"));
-        Bukkit.getConsoleSender().sendMessage(prefix+ColoredMessage.setColor("Thanks for using me!"));
+        Bukkit.getConsoleSender().sendMessage(prefix+ColoredMessage.setColor("&cHas been disabled"));
+        Bukkit.getConsoleSender().sendMessage(prefix+ColoredMessage.setColor("&aThanks for using me!"));
     }
 
     public void regCommands(){

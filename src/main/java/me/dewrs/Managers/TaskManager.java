@@ -34,10 +34,10 @@ public class TaskManager {
             if(alertTimes.isEmpty()){
                 return;
             }
-            nextAlertTime = alertTimes.removeFirst();
+            nextAlertTime = alertTimes.remove(0);
         }else{
             if(!alertTimes.isEmpty()) {
-                nextAlertTime = alertTimes.getFirst() + plugin.getConfigManager().getTimeToAlertProte();
+                nextAlertTime = alertTimes.get(0) + plugin.getConfigManager().getTimeToAlertProte();
             }else{
                 nextAlertTime = plugin.getConfigManager().getTimeToAlertProte();
             }

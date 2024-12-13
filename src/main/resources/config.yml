@@ -1,25 +1,44 @@
+########################################
+### ProtectionPvP Main Configuration ###
+########################################
 general_settings:
+  #Do you want players to have automatic protection when entering for the first time?
   protection_on_first_join: true
+  #Select the length of time the protection against pvp lasts
   time_protection: 1800
+  #Select how often an alert should be sent along with the remaining protection time
+  #If you want to have good performance, keep in mind that this value should be less than "time_protection"
   time_to_protection_alert: 300
+  #Do you want an extra alert to be sent when there is one minute left?
   one_minute_alert_enabled: true
 zones_settings:
-  block_distance_to_see_walls: 5
-  prote_players_can_enter_pvp_zones: false
+  #Do you want glass walls to be shown preventing access to areas designated for pvp?
   glass_walls_enabled: true
+  #Select how many blocks a player must be away from for the glass walls to be shown
+  block_distance_to_see_walls: 5
+  #Do you want players with protection against pvp to be able to enter the areas you designated for this purpose?
+  prote_players_can_enter_pvp_zones: false
 titles_settings:
+  #Title for when pvp protection is disabled
   prote_off:
+    #Should it be activated?
     enabled: true
+    #Text above
     up: "&cYour protection has been disabled"
+    #Text below
     down: "&fYou can now attack and be attacked"
+  #Title for when pvp protection is disabled
   prote_on:
     enabled: true
     up: "&aYour protection has been enabled"
     down: "&fYou are now safe from PvP"
+  #Remaining time alert title
   prote_alert:
     enabled: true
     up: "&eYour protection will be disabled in:"
     down: "&f%t%"
+#Customize the sounds that will be used, for this make sure that they exist
+#You can get the name of all the sounds at "https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html"
 sounds_settings:
   prote_off:
     enabled: true
