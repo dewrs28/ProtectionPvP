@@ -9,6 +9,7 @@ import me.dewrs.Events.WandListener;
 import me.dewrs.Managers.*;
 import me.dewrs.Model.PlayerData;
 import me.dewrs.Packets.ProtocolLibHook;
+import me.dewrs.UpdateChecker.UpdateChecker;
 import me.dewrs.Utils.ColoredMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -33,8 +34,9 @@ public class ProtectionPvP extends JavaPlugin {
     private TaskManager taskManager;
     public static HashMap<Player, Location> cacheLocCorner1;
     public static HashMap<Player, Location> cacheLocCorner2;
+    private static final int SPIGOT_RESOURCE_ID = 121277;
 
-    public void onEnable(){
+    public void onEnable() {
         zonesManager = new ZonesManager(this);
         zoneDataManager = new ZoneDataManager(this);
         configManager = new ConfigManager(this);
@@ -51,42 +53,54 @@ public class ProtectionPvP extends JavaPlugin {
         regEvents();
         cacheLocCorner1 = new HashMap<>();
         cacheLocCorner2 = new HashMap<>();
-        Bukkit.getConsoleSender().sendMessage(prefix+ColoredMessage.setColor("&aHas been enabled"));
-        Bukkit.getConsoleSender().sendMessage(prefix+ColoredMessage.setColor("&aPlugin created by &edewrs"));
+        Bukkit.getConsoleSender().sendMessage(prefix + ColoredMessage.setColor("&aHas been enabled"));
+        Bukkit.getConsoleSender().sendMessage(prefix + ColoredMessage.setColor("&aPlugin created by &edewrs"));
+        new UpdateChecker(this, SPIGOT_RESOURCE_ID).getLatestVersion(version -> {
+            if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
+                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "Is up to date!"));
+            } else {
+                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "*********************************************************************"));
+                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "&c CustomSurveys is outdated!"));
+                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "&cNewest version: &e1.1"));
+                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "&cYour version: &e" + version));
+                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "&cPlease Update Here: &ehttps://spigotmc.org/121277"));
+                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "*********************************************************************"));
+            }
+        });
     }
 
-    public void onDisable(){
-        for(PlayerData p : playerDataManager.getPlayers()){
-            if(p.isProtected()){
+    public void onDisable() {
+        for (PlayerData p : playerDataManager.getPlayers()) {
+            if (p.isProtected()) {
                 playerDataManager.setProtectionTime(p, playerDataManager.getNewTimeProtectedPlayer(p));
             }
         }
-        Bukkit.getConsoleSender().sendMessage(prefix+ColoredMessage.setColor("&cHas been disabled"));
-        Bukkit.getConsoleSender().sendMessage(prefix+ColoredMessage.setColor("&aThanks for using me!"));
+        Bukkit.getConsoleSender().sendMessage(prefix + ColoredMessage.setColor("&cHas been disabled"));
+        Bukkit.getConsoleSender().sendMessage(prefix + ColoredMessage.setColor("&aThanks for using me!"));
     }
 
-    public void regCommands(){
+    public void regCommands() {
         this.getCommand("protectionpvp").setExecutor(new MainCommand(this));
     }
 
-    public void regEvents(){
+    public void regEvents() {
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new PlayerListener(this), this);
         pm.registerEvents(new WandListener(this), this);
     }
 
-    public void reloadPlugin(){
+    public void reloadPlugin() {
         boolean changeWallsState = configManager.isGlassWallsEnabled();
         boolean changeCanEnterZonesState = configManager.isProtePlayersCanEnterPvPZones();
         this.getMessagesManager().reloadMessages();
         this.getConfigManager().reloadConfig();
-        if(!Objects.equals(changeWallsState, configManager.isGlassWallsEnabled())){
-            if(!configManager.isGlassWallsEnabled()){
+        if (!Objects.equals(changeWallsState, configManager.isGlassWallsEnabled())) {
+            if (!configManager.isGlassWallsEnabled()) {
                 zoneViewerManager.removeAllZoneWallsToAllPlayers();
             }
         }
-        if(!Objects.equals(changeCanEnterZonesState, configManager.isProtePlayersCanEnterPvPZones())){
-            if(configManager.isProtePlayersCanEnterPvPZones()){
+        if (!Objects.equals(changeCanEnterZonesState, configManager.isProtePlayersCanEnterPvPZones())) {
+            if (configManager.isProtePlayersCanEnterPvPZones()) {
                 zoneViewerManager.removeAllZoneWallsToAllPlayers();
             }
         }
