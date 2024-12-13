@@ -53,7 +53,7 @@ public class PlayerListener implements Listener {
         PlayerDataManager playerDataManager = plugin.getPlayerDataManager();
         PlayerData playerData = playerDataManager.getPlayerData(player);
         if(playerData.isProtected()){
-            Bukkit.getScheduler().cancelTask(playerData.getTaskID());
+            plugin.getTaskManager().stopAllTask(playerData);
             playerDataManager.setProtectionTime(playerData, playerDataManager.getNewTimeProtectedPlayer(playerData));
         }
         plugin.getZoneViewerManager().removeFullPlayer(player);

@@ -1,11 +1,15 @@
 package me.dewrs;
 
+import me.dewrs.Enums.CustomSound;
+import me.dewrs.Enums.CustomTitle;
 import me.dewrs.Managers.PlayerDataManager;
 import me.dewrs.Managers.ZonesManager;
 import me.dewrs.Model.PlayerData;
 import me.dewrs.Model.ZonePvP;
 import me.dewrs.Utils.ColoredMessage;
 import me.dewrs.Utils.ItemStackUtils;
+import me.dewrs.Utils.SoundUtils;
+import me.dewrs.Utils.TitleUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -100,9 +104,15 @@ public class MainCommand implements CommandExecutor {
         if (booleanSet.equalsIgnoreCase("off")) {
             if(playerData.isProtected()) {
                 playerDataManager.toggleProtectionPlayer(playerData, false);
-                Bukkit.getScheduler().cancelTask(playerData.getTaskID());
+                plugin.getTaskManager().stopAllTask(playerData);
                 sender.sendMessage(ProtectionPvP.prefix+ColoredMessage.setColor(plugin.getMessagesManager().getProteOffOther().replaceAll("%p%", playerData.getName())));
                 target.sendMessage(ColoredMessage.setColor(plugin.getMessagesManager().getProteOffYourself()));
+                if(plugin.getConfigManager().isTitleProteOffEnabled()) {
+                    TitleUtils.sendTitle(target, CustomTitle.PROTE_OFF, plugin);
+                }
+                if(plugin.getConfigManager().isSoundProteOffEnabled()) {
+                    SoundUtils.sendSound(target, CustomSound.PROTE_OFF, plugin);
+                }
                 return;
             }
             sender.sendMessage(ProtectionPvP.prefix+ColoredMessage.setColor(plugin.getMessagesManager().getProteAlreadyOffOther().replaceAll("%p%", playerData.getName())));
@@ -111,6 +121,12 @@ public class MainCommand implements CommandExecutor {
                 playerDataManager.toggleProtectionPlayer(playerData, true);
                 sender.sendMessage(ProtectionPvP.prefix+ColoredMessage.setColor(plugin.getMessagesManager().getProteOnOther().replaceAll("%p%", playerData.getName())));
                 target.sendMessage(ProtectionPvP.prefix+ColoredMessage.setColor(plugin.getMessagesManager().getProteOnYourself()));
+                if(plugin.getConfigManager().isTitleProteOnEnabled()) {
+                    TitleUtils.sendTitle(target, CustomTitle.PROTE_ON, plugin);
+                }
+                if(plugin.getConfigManager().isSoundProteOnEnabled()) {
+                    SoundUtils.sendSound(target, CustomSound.PROTE_ON, plugin);
+                }
                 return;
             }
             sender.sendMessage(ProtectionPvP.prefix+ColoredMessage.setColor(plugin.getMessagesManager().getProteAlreadyOnOther().replaceAll("%p%", playerData.getName())));
@@ -171,8 +187,14 @@ public class MainCommand implements CommandExecutor {
         PlayerData playerData = playerDataManager.getPlayerData((Player) sender);
         if(playerData.isProtected()) {
             playerDataManager.toggleProtectionPlayer(playerData, false);
-            Bukkit.getScheduler().cancelTask(playerData.getTaskID());
+            plugin.getTaskManager().stopAllTask(playerData);
             sender.sendMessage(ColoredMessage.setColor(plugin.getMessagesManager().getProteOffYourself()));
+            if(plugin.getConfigManager().isTitleProteOffEnabled()) {
+                TitleUtils.sendTitle((Player) sender, CustomTitle.PROTE_OFF, plugin);
+            }
+            if(plugin.getConfigManager().isSoundProteOffEnabled()) {
+                SoundUtils.sendSound((Player) sender, CustomSound.PROTE_OFF, plugin);
+            }
             return;
         }
         sender.sendMessage(ProtectionPvP.prefix+ColoredMessage.setColor(plugin.getMessagesManager().getProteAlreadyOff()));
@@ -197,8 +219,14 @@ public class MainCommand implements CommandExecutor {
             sender.sendMessage(ProtectionPvP.prefix + ColoredMessage.setColor(plugin.getMessagesManager().getZoneNoSelected()));
             return;
         }
-        ZonePvP zonePvP = new ZonePvP(zoneName.toLowerCase(), ProtectionPvP.cacheLocCorner1.get(sender).getWorld().getName(),
-                ProtectionPvP.cacheLocCorner1.get(sender), ProtectionPvP.cacheLocCorner2.get(sender));
+        Location corner1 = ProtectionPvP.cacheLocCorner1.get(sender);
+        Location corner2 = ProtectionPvP.cacheLocCorner2.get(sender);
+        if(plugin.getZonesManager().isZoneOverlap(corner1, corner2)){
+            sender.sendMessage(ProtectionPvP.prefix+ColoredMessage.setColor(plugin.getMessagesManager().getZoneOverlap()));
+            return;
+        }
+        ZonePvP zonePvP = new ZonePvP(zoneName.toLowerCase(), corner1.getWorld().getName(),
+                corner1, corner2);
         zonesManager.createNewZone(zonePvP);
         zonesManager.restorePlayerCornerCache((Player) sender);
         sender.sendMessage(ProtectionPvP.prefix + ColoredMessage.setColor(plugin.getMessagesManager().getZoneCreate()));

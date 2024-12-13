@@ -3,12 +3,12 @@ package me.dewrs.Managers;
 import me.dewrs.Model.PlayerData;
 import me.dewrs.Model.ZonePvP;
 import me.dewrs.ProtectionPvP;
-import me.dewrs.Scheduler.TogglePvPTask;
 import me.dewrs.Utils.Countdown;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.UUID;
 
 public class PlayerDataManager {
@@ -48,6 +48,11 @@ public class PlayerDataManager {
     public void setProtectionTime(PlayerData playerData, int time){
         playerData.setActualProtectionTime(time);
         plugin.getUserDataManager().writeValuesInConfig(playerData,"time", time);
+    }
+
+    public void setListAlertTimes(PlayerData playerData, ArrayList<Integer> list){
+        playerData.setListAlertTimes(list);
+        plugin.getUserDataManager().writeValuesInConfig(playerData, "alertTimes", list);
     }
 
     public void manageFirstTimeJoin(Player player){
@@ -97,27 +102,25 @@ public class PlayerDataManager {
 
     public void toggleProtectionPlayer(PlayerData playerData, boolean status){
         if(status){
-            TogglePvPTask togglePvPTask = new TogglePvPTask(plugin,playerData);
             int time = plugin.getConfigManager().getProtectionTime();
             updateCooldownMillis(playerData);
             setProtectionTime(playerData,time);
             setProtected(playerData, true);
-            togglePvPTask.runTaskLater(plugin,time*20L);
-            playerData.setTaskID(togglePvPTask.getTaskId());
+            setListAlertTimes(playerData, getAlertTimes(playerData));
+            plugin.getTaskManager().startTaskProteOn(playerData, time, false);
         }else{
             setCooldownMillis(playerData, 0);
             setProtectionTime(playerData, 0);
             setProtected(playerData, false);
+            setListAlertTimes(playerData, new ArrayList<>());
         }
     }
 
     public void reStartProtectionPlayer(PlayerData playerData){
-        TogglePvPTask togglePvPTask = new TogglePvPTask(plugin,playerData);
         int time = playerData.getActualProtectionTime();
         updateCooldownMillis(playerData);
         setProtected(playerData, true);
-        togglePvPTask.runTaskLater(plugin,time*20L);
-        playerData.setTaskID(togglePvPTask.getTaskId());
+        plugin.getTaskManager().startTaskProteOn(playerData, time, true);
     }
 
     public String getCountdown(PlayerData playerData){
@@ -126,5 +129,21 @@ public class PlayerDataManager {
 
     public int getNewTimeProtectedPlayer(PlayerData playerData){
         return Countdown.getSecsLeft(playerData.getCooldownMillis(), playerData.getActualProtectionTime());
+    }
+
+    public ArrayList<Integer> getAlertTimes(PlayerData playerData) {
+        ArrayList<Integer> list = new ArrayList<>();
+        int protectedTime = playerData.getActualProtectionTime();
+        int interval = plugin.getConfigManager().getTimeToAlertProte();
+
+        for (int time = protectedTime - interval; time > 0; time -= interval) {
+            list.add(time);
+        }
+        if(plugin.getConfigManager().isOneMinAlertEnabled()){
+            if(!list.contains(60)){
+                list.add(60);
+            }
+        }
+        return list;
     }
 }

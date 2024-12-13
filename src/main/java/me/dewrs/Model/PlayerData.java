@@ -1,5 +1,7 @@
 package me.dewrs.Model;
 
+import java.util.ArrayList;
+
 public class PlayerData {
     private final String uuid;
     private String name;
@@ -7,9 +9,13 @@ public class PlayerData {
     private int actualProtectionTime;
     private boolean isProtected;
     private int taskID;
+    private int alertTaskID;
+    private ArrayList<Integer> listAlertTimes;
 
     public PlayerData(String uuid) {
         this.uuid = uuid;
+        taskID = 0;
+        alertTaskID = 0;
     }
 
     public String getUuid() {
@@ -56,4 +62,19 @@ public class PlayerData {
         this.taskID = taskID;
     }
 
+    public int getAlertTaskID() {
+        return alertTaskID;
+    }
+
+    public void setAlertTaskID(int alertTaskID) {
+        this.alertTaskID = alertTaskID;
+    }
+
+    public ArrayList<Integer> getListAlertTimes() {
+        return listAlertTimes;
+    }
+
+    public void setListAlertTimes(ArrayList<Integer> listAlertTimes) {
+        this.listAlertTimes = listAlertTimes;
+    }
 }

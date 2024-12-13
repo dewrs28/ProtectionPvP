@@ -1,12 +1,38 @@
-settings:
+general_settings:
   protection_on_first_join: true
-  time_protection: 120
+  time_protection: 1800
+  time_to_protection_alert: 300
+  one_minute_alert_enabled: true
+zones_settings:
   block_distance_to_see_walls: 5
   prote_players_can_enter_pvp_zones: false
   glass_walls_enabled: true
-wand_selector:
-  name: "&e&lSelector de zona"
+titles_settings:
+  prote_off:
+    enabled: true
+    up: "&cYour protection has been disabled"
+    down: "&fYou can now attack and be attacked"
+  prote_on:
+    enabled: true
+    up: "&aYour protection has been enabled"
+    down: "&fYou are now safe from PvP"
+  prote_alert:
+    enabled: true
+    up: "&eYour protection will be disabled in:"
+    down: "&f%t%"
+sounds_settings:
+  prote_off:
+    enabled: true
+    sound: BLOCK_ANVIL_USE
+  prote_on:
+    enabled: true
+    sound: BLOCK_NOTE_BLOCK_BELL
+  prote_alert:
+    enabled:
+    sound: BLOCK_NOTE_BLOCK_BELL
+wand_selector_settings:
+  name: "&e&lZone Selector"
   lore:
     - ""
-    - "&fSelecciona la zona que va a ser"
-    - "&fdestinada a pvp"
+    - "&fSelect the zone that will be"
+    - "&fdedicated to PvP"

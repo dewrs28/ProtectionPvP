@@ -24,6 +24,7 @@ public class ZoneDataManager {
         ArrayList<ZonePvP> zones = new ArrayList<>();
         if(getFileConfiguration().getConfigurationSection("pvp_zones") != null) {
             for (String key : getFileConfiguration().getConfigurationSection("pvp_zones").getKeys(false)) {
+                key = key.toLowerCase();
                 String world = getFileConfiguration().getString("pvp_zones." + key + ".world");
                 if(world != null) {
                     Location corner1 = new Location(Bukkit.getWorld(world),

@@ -19,7 +19,6 @@ public class WandListener implements Listener {
         this.plugin = plugin;
     }
 
-
     @EventHandler
     public void onSelect(PlayerInteractEvent event){
         Player player = event.getPlayer();

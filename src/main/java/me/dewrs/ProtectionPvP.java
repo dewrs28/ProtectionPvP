@@ -6,10 +6,7 @@ import me.dewrs.Config.UserDataManager;
 import me.dewrs.Config.ZoneDataManager;
 import me.dewrs.Events.PlayerListener;
 import me.dewrs.Events.WandListener;
-import me.dewrs.Managers.PlayerDataManager;
-import me.dewrs.Managers.SafeZoneManager;
-import me.dewrs.Managers.ZoneViewerManager;
-import me.dewrs.Managers.ZonesManager;
+import me.dewrs.Managers.*;
 import me.dewrs.Model.PlayerData;
 import me.dewrs.Packets.ProtocolLibHook;
 import me.dewrs.Utils.ColoredMessage;
@@ -33,6 +30,7 @@ public class ProtectionPvP extends JavaPlugin {
     private ZoneViewerManager zoneViewerManager;
     private ProtocolLibHook protocolLibHook;
     private SafeZoneManager safeZoneManager;
+    private TaskManager taskManager;
     public static HashMap<Player, Location> cacheLocCorner1;
     public static HashMap<Player, Location> cacheLocCorner2;
 
@@ -46,13 +44,15 @@ public class ProtectionPvP extends JavaPlugin {
         protocolLibHook = new ProtocolLibHook(this);
         zoneViewerManager = new ZoneViewerManager(this);
         safeZoneManager = new SafeZoneManager(this);
+        taskManager = new TaskManager(this);
         protocolLibHook.addBlockDigInterception();
         protocolLibHook.addBlockInteractInterception();
         regCommands();
         regEvents();
         cacheLocCorner1 = new HashMap<>();
         cacheLocCorner2 = new HashMap<>();
-        Bukkit.getConsoleSender().sendMessage(prefix+ColoredMessage.setColor("has been enabled"));
+        Bukkit.getConsoleSender().sendMessage(prefix+ColoredMessage.setColor("&aHas been enabled"));
+        Bukkit.getConsoleSender().sendMessage(prefix+ColoredMessage.setColor("&aPlugin created by &edewrs"));
     }
 
     public void onDisable(){
@@ -61,7 +61,8 @@ public class ProtectionPvP extends JavaPlugin {
                 playerDataManager.setProtectionTime(p, playerDataManager.getNewTimeProtectedPlayer(p));
             }
         }
-        Bukkit.getConsoleSender().sendMessage(prefix+ColoredMessage.setColor("has been disabled"));
+        Bukkit.getConsoleSender().sendMessage(prefix+ColoredMessage.setColor("Has been disabled"));
+        Bukkit.getConsoleSender().sendMessage(prefix+ColoredMessage.setColor("Thanks for using me!"));
     }
 
     public void regCommands(){
@@ -125,5 +126,9 @@ public class ProtectionPvP extends JavaPlugin {
 
     public SafeZoneManager getSafeZoneManager() {
         return safeZoneManager;
+    }
+
+    public TaskManager getTaskManager() {
+        return taskManager;
     }
 }

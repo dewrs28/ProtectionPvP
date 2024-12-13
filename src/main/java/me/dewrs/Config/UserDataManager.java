@@ -100,6 +100,7 @@ public class UserDataManager {
                 playerData.setCooldownMillis(config.getLong("cooldown"));
                 playerData.setActualProtectionTime(config.getInt("time"));
                 playerData.setProtected(config.getBoolean("isProtected"));
+                playerData.setListAlertTimes((ArrayList<Integer>) config.getIntegerList("alertTimes"));
                 players.add(playerData);
             }
         }
@@ -145,6 +146,7 @@ public class UserDataManager {
             this.getFileConfiguration(playerData).set("cooldown", 0);
             this.getFileConfiguration(playerData).set("time", 0);
             this.getFileConfiguration(playerData).set("isProtected", false);
+            this.getFileConfiguration(playerData).set("alertTimes", new ArrayList<Integer>());
             this.saveConfig(playerData);
         }
     }

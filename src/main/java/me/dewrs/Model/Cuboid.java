@@ -72,7 +72,6 @@ public class Cuboid {
         return blocks;
     }
 
-
     public int getxMin() {
         return xMin;
     }

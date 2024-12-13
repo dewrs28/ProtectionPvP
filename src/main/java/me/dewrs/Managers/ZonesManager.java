@@ -164,4 +164,15 @@ public class ZonesManager {
         }
         player.teleport(tpLocation);
     }
+
+    public boolean isZoneOverlap(Location corner1, Location corner2){
+        Cuboid preZone = new Cuboid(corner1, corner2);
+        for(ZonePvP z : plugin.getZonesManager().getZones()){
+            if (preZone.getxMin() <= z.getxMax() && preZone.getxMax() >= z.getxMin() &&
+                    preZone.getzMin() <= z.getzMax() && preZone.getzMax() >= z.getzMin()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

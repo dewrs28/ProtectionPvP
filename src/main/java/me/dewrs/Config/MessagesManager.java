@@ -38,6 +38,8 @@ public class MessagesManager {
     private String zoneListEmpty;
     private String zoneSetTp;
     private String tpZoneProteOn;
+    private String zoneOverlap;
+    private String proteAlert;
     public MessagesManager(ProtectionPvP plugin){
         this.plugin = plugin;
         customConfig = new CustomConfig("messages.yml", null, plugin);
@@ -77,6 +79,8 @@ public class MessagesManager {
         zoneListEmpty = config.getString("messages.zone_list_empty");
         zoneSetTp = config.getString("messages.zone_tp_set");
         tpZoneProteOn = config.getString("messages.tp_zone_prote_on");
+        zoneOverlap = config.getString("messages.zone_overlap");
+        proteAlert = config.getString("messages.prote_alert");
     }
 
     public void reloadMessages(){
@@ -202,5 +206,13 @@ public class MessagesManager {
 
     public String getTpZoneProteOn() {
         return tpZoneProteOn;
+    }
+
+    public String getZoneOverlap() {
+        return zoneOverlap;
+    }
+
+    public String getProteAlert() {
+        return proteAlert;
     }
 }
