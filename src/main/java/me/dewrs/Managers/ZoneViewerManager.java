@@ -130,7 +130,9 @@ public class ZoneViewerManager {
         }
     }
 
+    @SuppressWarnings("ALL")
     public boolean isViewingBlock(Player player, Location location){
+        if(playersBlocksViewing.get(player) == null) return false;
         return playersBlocksViewing.get(player).contains(location);
     }
 }

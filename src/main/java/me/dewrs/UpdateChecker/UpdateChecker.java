@@ -1,33 +1,41 @@
 package me.dewrs.UpdateChecker;
 
 import me.dewrs.ProtectionPvP;
-import org.bukkit.Bukkit;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Scanner;
-import java.util.function.Consumer;
 
 public class UpdateChecker {
     private ProtectionPvP plugin;
-    private int resourceId;
+    private String version;
+    private String latestVersion;
 
-    public UpdateChecker(ProtectionPvP plugin, int resourceId) {
-        this.plugin = plugin;
-        this.resourceId = resourceId;
+    public UpdateChecker(String version) {
+        this.version = version;
     }
 
-    public void getLatestVersion(Consumer<String> consumer) {
-        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            try (InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + this.resourceId).openStream();
-                 Scanner scanner = new Scanner(inputStream)) {
-                if (scanner.hasNext()) {
-                    consumer.accept(scanner.next());
+    public UpdateCheckerResult check(){
+        try {
+            HttpURLConnection con = (HttpURLConnection) new URL(
+                    "https://api.spigotmc.org/legacy/update.php?resource=121277").openConnection();
+            int timed_out = 1250;
+            con.setConnectTimeout(timed_out);
+            con.setReadTimeout(timed_out);
+            latestVersion = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
+            if (latestVersion.length() <= 7) {
+                if(!version.equals(latestVersion)){
+                    return UpdateCheckerResult.noErrors(latestVersion);
                 }
-            } catch (IOException exception) {
-                this.plugin.getLogger().info("Cannot look for updates: " + exception.getMessage());
             }
-        });
+            return UpdateCheckerResult.noErrors(null);
+        } catch (Exception ex) {
+            return UpdateCheckerResult.error();
+        }
+    }
+
+    public String getLatestVersion() {
+        return latestVersion;
     }
 }

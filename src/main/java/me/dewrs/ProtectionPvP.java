@@ -14,6 +14,7 @@ import me.dewrs.Utils.ColoredMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,6 +23,8 @@ import java.util.Objects;
 
 public class ProtectionPvP extends JavaPlugin {
     public static String prefix = ColoredMessage.setColor("&8[&eProtectionPvP&8]&r ");
+    private PluginDescriptionFile pdfFile = getDescription();
+    public String version = pdfFile.getVersion();
     private ConfigManager configManager;
     private MessagesManager messagesManager;
     private UserDataManager userDataManager;
@@ -32,9 +35,9 @@ public class ProtectionPvP extends JavaPlugin {
     private ProtocolLibHook protocolLibHook;
     private SafeZoneManager safeZoneManager;
     private TaskManager taskManager;
+    private UpdateChecker updateChecker;
     public static HashMap<Player, Location> cacheLocCorner1;
     public static HashMap<Player, Location> cacheLocCorner2;
-    private static final int SPIGOT_RESOURCE_ID = 121277;
 
     public void onEnable() {
         zonesManager = new ZonesManager(this);
@@ -48,25 +51,18 @@ public class ProtectionPvP extends JavaPlugin {
         safeZoneManager = new SafeZoneManager(this);
         taskManager = new TaskManager(this);
         protocolLibHook.addBlockDigInterception();
-        protocolLibHook.addBlockInteractInterception();
+        if (isPaperServer()) {
+            protocolLibHook.addBlockInteractInterceptionPaper();
+        } else {
+            protocolLibHook.addBlockInteractInterceptionSpigot();
+        }
         regCommands();
         regEvents();
         cacheLocCorner1 = new HashMap<>();
         cacheLocCorner2 = new HashMap<>();
         Bukkit.getConsoleSender().sendMessage(prefix + ColoredMessage.setColor("&aHas been enabled"));
         Bukkit.getConsoleSender().sendMessage(prefix + ColoredMessage.setColor("&aPlugin created by &edewrs"));
-        new UpdateChecker(this, SPIGOT_RESOURCE_ID).getLatestVersion(version -> {
-            if (this.getDescription().getVersion().equalsIgnoreCase(version)) {
-                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "Is up to date!"));
-            } else {
-                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "*********************************************************************"));
-                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "&c CustomSurveys is outdated!"));
-                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "&cNewest version: &e1.1"));
-                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "&cYour version: &e" + version));
-                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "&cPlease Update Here: &ehttps://spigotmc.org/121277"));
-                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "*********************************************************************"));
-            }
-        });
+        manageUpdateChecker();
     }
 
     public void onDisable() {
@@ -103,6 +99,33 @@ public class ProtectionPvP extends JavaPlugin {
             if (configManager.isProtePlayersCanEnterPvPZones()) {
                 zoneViewerManager.removeAllZoneWallsToAllPlayers();
             }
+        }
+    }
+
+    public boolean isPaperServer(){
+        boolean isPaper = false;
+        try {
+            Class.forName("com.destroystokyo.paper.ParticleBuilder");
+            isPaper = true;
+        } catch (ClassNotFoundException ignored) {
+        }
+        return isPaper;
+    }
+
+    public void manageUpdateChecker(){
+        updateChecker = new UpdateChecker(version);
+        if (!updateChecker.check().isError()) {
+            String latestVersion = updateChecker.check().getLatestVersion();
+            if (latestVersion != null) {
+                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "*********************************************************************"));
+                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "&cProtectionPvP is outdated!"));
+                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "&cNewest version: &e"+updateChecker.getLatestVersion()));
+                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "&cYour version: &e"+version));
+                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "&cPlease Update Here: &ehttps://spigotmc.org/resources/121277"));
+                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "*********************************************************************"));
+            }
+        } else {
+            Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + " &cError while checking update."));
         }
     }
 

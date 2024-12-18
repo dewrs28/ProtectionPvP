@@ -94,7 +94,37 @@ public class ProtocolLibHook {
         });
     }
 
-    public void addBlockInteractInterception() {
+    public void addBlockInteractInterceptionPaper() {
+        manager.addPacketListener(new PacketAdapter(main, ListenerPriority.HIGHEST, PacketType.Play.Client.BLOCK_PLACE) {
+            @Override
+            public void onPacketReceiving(PacketEvent event) {
+                Player player = event.getPlayer();
+
+                EnumWrappers.Hand hand = event.getPacket().getHands().read(0);
+                if(hand == EnumWrappers.Hand.OFF_HAND){
+                    return;
+                }
+                MovingObjectPositionBlock objectPosition = event.getPacket().getMovingBlockPositions().read(0);
+                BlockPosition blockPosition = objectPosition.getBlockPosition();
+                Location blockLocation = new Location(player.getWorld(), blockPosition.getX(), blockPosition.getY(), blockPosition.getZ());
+                if(!main.getZoneViewerManager().isViewingBlock(player, blockLocation)){
+                    return;
+                }
+                for(ZonePvP zone : main.getZonesManager().getZones()){
+                    if(zone.getWalls().contains(blockLocation)){
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                sendBlockUpdate(player,blockLocation);
+                            }
+                        }.runTaskLater(plugin, 1);
+                    }
+                }
+            }
+        });
+    }
+
+    public void addBlockInteractInterceptionSpigot() {
         manager.addPacketListener(new PacketAdapter(main, ListenerPriority.HIGHEST, PacketType.Play.Client.USE_ITEM) {
             @Override
             public void onPacketReceiving(PacketEvent event) {
@@ -108,7 +138,9 @@ public class ProtocolLibHook {
                 MovingObjectPositionBlock objectPosition = event.getPacket().getMovingBlockPositions().read(0);
                 BlockPosition blockPosition = objectPosition.getBlockPosition();
                 Location blockLocation = new Location(player.getWorld(), blockPosition.getX(), blockPosition.getY(), blockPosition.getZ());
-
+                if(!main.getZoneViewerManager().isViewingBlock(player, blockLocation)){
+                    return;
+                }
                 for(ZonePvP zone : main.getZonesManager().getZones()){
                     if(zone.getWalls().contains(blockLocation)){
                         new BukkitRunnable() {
