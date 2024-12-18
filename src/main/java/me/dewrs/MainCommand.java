@@ -15,11 +15,14 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class MainCommand implements CommandExecutor {
+public class MainCommand implements CommandExecutor, TabCompleter {
     private ProtectionPvP plugin;
 
     public MainCommand(ProtectionPvP plugin) {
@@ -354,5 +357,58 @@ public class MainCommand implements CommandExecutor {
                 sender.sendMessage(ColoredMessage.setColor(m));
             }
         }
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String s, String[] args) {
+        if(args.length == 1){
+            List<String> arguments = new ArrayList<>(List.of("off", "status", "help"));
+            Map<String, String[]> permissionCommands = Map.of(
+                    "protectionpvp.admin.set", new String[]{"set"},
+                    "protectionpvp.admin.reload", new String[]{"reload"},
+                    "protectionpvp.admin.wand", new String[]{"wand", "createzone"},
+                    "protectionpvp.admin.deletezone", new String[]{"deletezone"},
+                    "protectionpvp.admin.renamezone", new String[]{"renamezone"},
+                    "protectionpvp.admin.settpzone", new String[]{"settp"},
+                    "protectionpvp.admin.listzones", new String[]{"listzones"}
+            );
+            for (Map.Entry<String, String[]> entry : permissionCommands.entrySet()) {
+                if (sender.hasPermission(entry.getKey())) {
+                    arguments.addAll(List.of(entry.getValue()));
+                }
+            }
+            return arguments;
+        }
+        if(args.length == 2){
+            String mainCommand = args[0];
+            if(mainCommand.equalsIgnoreCase("help") && sender.hasPermission("protectionpvp.admin")){
+                return List.of("admin");
+            }
+            if(mainCommand.equalsIgnoreCase("status")){
+                return Bukkit.getOnlinePlayers().stream().map(Player::getName).toList();
+            }
+            if(mainCommand.equalsIgnoreCase("set") && sender.hasPermission("protectionpvp.admin.set")){
+                return Bukkit.getOnlinePlayers().stream().map(Player::getName).toList();
+            }
+            if(mainCommand.equalsIgnoreCase("deletezone") && sender.hasPermission("protectionpvp.admin.deletezone")){
+                return plugin.getZonesManager().getZones().stream().map(ZonePvP::getName).toList();
+            }
+            if(mainCommand.equalsIgnoreCase("renamezone") && sender.hasPermission("protectionpvp.admin.renamezone")){
+                return plugin.getZonesManager().getZones().stream().map(ZonePvP::getName).toList();
+            }
+            if(mainCommand.equalsIgnoreCase("settp") && sender.hasPermission("protectionpvp.admin.settpzone")){
+                return plugin.getZonesManager().getZones().stream().map(ZonePvP::getName).toList();
+            }
+        }
+        if(args.length == 3){
+            List<String> arguments = new ArrayList<>();
+            String mainCommand = args[0];
+            if(mainCommand.equalsIgnoreCase("set") && sender.hasPermission("protectionpvp.admin.set")){
+                arguments.add("on");
+                arguments.add("off");
+            }
+            return arguments;
+        }
+        return null;
     }
 }

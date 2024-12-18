@@ -62,6 +62,7 @@ public class ProtectionPvP extends JavaPlugin {
         cacheLocCorner2 = new HashMap<>();
         Bukkit.getConsoleSender().sendMessage(prefix + ColoredMessage.setColor("&aHas been enabled"));
         Bukkit.getConsoleSender().sendMessage(prefix + ColoredMessage.setColor("&aPlugin created by &edewrs"));
+        updateChecker = new UpdateChecker(version);
         manageUpdateChecker();
     }
 
@@ -113,13 +114,12 @@ public class ProtectionPvP extends JavaPlugin {
     }
 
     public void manageUpdateChecker(){
-        updateChecker = new UpdateChecker(version);
         if (!updateChecker.check().isError()) {
             String latestVersion = updateChecker.check().getLatestVersion();
             if (latestVersion != null) {
                 Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "*********************************************************************"));
                 Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "&cProtectionPvP is outdated!"));
-                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "&cNewest version: &e"+updateChecker.getLatestVersion()));
+                Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "&cNewest version: &e"+latestVersion));
                 Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "&cYour version: &e"+version));
                 Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "&cPlease Update Here: &ehttps://spigotmc.org/resources/121277"));
                 Bukkit.getConsoleSender().sendMessage(ColoredMessage.setColor(prefix + "*********************************************************************"));
@@ -167,5 +167,9 @@ public class ProtectionPvP extends JavaPlugin {
 
     public TaskManager getTaskManager() {
         return taskManager;
+    }
+
+    public UpdateChecker getUpdateChecker() {
+        return updateChecker;
     }
 }

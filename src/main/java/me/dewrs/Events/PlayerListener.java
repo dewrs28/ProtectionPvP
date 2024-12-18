@@ -45,6 +45,11 @@ public class PlayerListener implements Listener {
             }
         }
         playerDataManager.manageFirstTimeJoin(player);
+        String latestVersion = plugin.getUpdateChecker().getLatestVersion();
+        if((player.hasPermission("protectionpvp.admin") || player.isOp()) && !plugin.version.equals(latestVersion)){
+            player.sendMessage(ProtectionPvP.prefix+ColoredMessage.setColor("&cThere is a new version of the plugin &8(&e"+latestVersion+"&8)"));
+            player.sendMessage(ProtectionPvP.prefix+ColoredMessage.setColor("&cYou can download it at: &ehttps://spigotmc.org/resources/121277"));
+        }
     }
 
     @EventHandler

@@ -1,14 +1,11 @@
 package me.dewrs.UpdateChecker;
 
-import me.dewrs.ProtectionPvP;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class UpdateChecker {
-    private ProtectionPvP plugin;
     private String version;
     private String latestVersion;
 
