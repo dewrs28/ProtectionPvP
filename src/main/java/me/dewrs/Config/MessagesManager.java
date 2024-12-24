@@ -47,7 +47,7 @@ public class MessagesManager {
         loadMessages();
     }
 
-    public void loadMessages(){
+    private void loadMessages(){
         FileConfiguration config = customConfig.getConfig();
         helpPlayer = config.getStringList("help_message_player");
         helpAdmin = config.getStringList("help_message_admin");

@@ -69,7 +69,7 @@ public class ZoneViewerManager {
         }
     }
 
-    public void addZoneWalls(Player player, ArrayList<ZonePvP> zones) {
+    private void addZoneWalls(Player player, ArrayList<ZonePvP> zones) {
         Set<Location> validLocations = new HashSet<>(this.getPlayerCuboId(player).getLocationsIn());
         ArrayList<Location> viewedBlocks = playersBlocksViewing.computeIfAbsent(player, k -> new ArrayList<>());
         for (ZonePvP zone : zones) {

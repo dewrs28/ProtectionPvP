@@ -155,12 +155,12 @@ public class ProtocolLibHook {
         });
     }
 
-    public void refreshFakeBlock(Player player, Location loaction) {
+    private void refreshFakeBlock(Player player, Location location) {
         PacketContainer fakeBlockPacket = manager.createPacket(PacketType.Play.Server.BLOCK_CHANGE);
 
-        fakeBlockPacket.getBlockPositionModifier().write(0, new BlockPosition(loaction.getBlockX(), loaction.getBlockY(), loaction.getBlockZ()));
+        fakeBlockPacket.getBlockPositionModifier().write(0, new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ()));
         fakeBlockPacket.getBlockData().write(0, WrappedBlockData.createData(Material.AIR));
 
-        sendBlockUpdate(player, loaction);
+        sendBlockUpdate(player, location);
     }
 }

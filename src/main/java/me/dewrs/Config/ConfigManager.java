@@ -39,7 +39,7 @@ public class ConfigManager {
         loadConfig();
     }
 
-    public void loadConfig(){
+    private void loadConfig(){
         FileConfiguration config = customConfig.getConfig();
         protectionTime = config.getInt("general_settings.time_protection");
         nameWand = config.getString("wand_selector_settings.name");

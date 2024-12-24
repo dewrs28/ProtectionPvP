@@ -1,5 +1,6 @@
 package me.dewrs.Managers;
 
+import me.dewrs.Api.ToggleProtectionEvent;
 import me.dewrs.Model.PlayerData;
 import me.dewrs.Model.ZonePvP;
 import me.dewrs.ProtectionPvP;
@@ -8,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.UUID;
 
 public class PlayerDataManager {
@@ -78,13 +78,13 @@ public class PlayerDataManager {
         }
     }
 
-    public void updateCooldownMillis(PlayerData playerData){
+    private void updateCooldownMillis(PlayerData playerData){
         long millis = System.currentTimeMillis();
         playerData.setCooldownMillis(millis);
         plugin.getUserDataManager().writeValuesInConfig(playerData,"cooldown", millis);
     }
 
-    public void setProtected(PlayerData playerData, boolean status){
+    private void setProtected(PlayerData playerData, boolean status){
         playerData.setProtected(status);
         plugin.getUserDataManager().writeValuesInConfig(playerData,"isProtected",status);
         if(!status){
@@ -108,11 +108,15 @@ public class PlayerDataManager {
             setProtected(playerData, true);
             setListAlertTimes(playerData, getAlertTimes(playerData));
             plugin.getTaskManager().startTaskProteOn(playerData, time, false);
+            Player player = getPlayerByPlayerData(playerData);
+            Bukkit.getPluginManager().callEvent(new ToggleProtectionEvent(player, true));
         }else{
             setCooldownMillis(playerData, 0);
             setProtectionTime(playerData, 0);
             setProtected(playerData, false);
             setListAlertTimes(playerData, new ArrayList<>());
+            Player player = getPlayerByPlayerData(playerData);
+            Bukkit.getPluginManager().callEvent(new ToggleProtectionEvent(player, false));
         }
     }
 

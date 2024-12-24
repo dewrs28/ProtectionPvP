@@ -32,7 +32,7 @@ public class UserDataManager {
         registerConfigFiles();
     }
 
-    public void createFolder() {
+    private void createFolder() {
         File folder;
         try {
             folder = new File(plugin.getDataFolder() + File.separator + folderName);
@@ -56,13 +56,13 @@ public class UserDataManager {
         }
     }
 
-    public void saveConfigFiles() {
-        for (int i = 0; i < configFiles.size(); i++) {
-            configFiles.get(i).saveConfig();
+    private void saveConfigFiles() {
+        for (CustomConfig configFile : configFiles) {
+            configFile.saveConfig();
         }
     }
 
-    public void registerConfigFiles() {
+    private void registerConfigFiles() {
         String path = plugin.getDataFolder() + File.separator + folderName;
         File folder = new File(path);
         File[] listOfFiles = folder.listFiles();
@@ -89,7 +89,7 @@ public class UserDataManager {
         return false;
     }
 
-    public void configurePlayerDatas(){
+    private void configurePlayerDatas(){
         ArrayList<PlayerData> players = new ArrayList<>();
         for(CustomConfig customConfig : configFiles){
             if(isValidPlayerData(customConfig.getPath())){
@@ -117,7 +117,7 @@ public class UserDataManager {
         return null;
     }
 
-    public void registerConfigFile(String pathName) {
+    private void registerConfigFile(String pathName) {
         if (!fileAlreadyRegistered(pathName)) {
             CustomConfig config = new CustomConfig(pathName, folderName, plugin);
             config.registerConfig();
@@ -125,7 +125,7 @@ public class UserDataManager {
         }
     }
 
-    public void saveConfig(PlayerData playerData) {
+    private void saveConfig(PlayerData playerData) {
         CustomConfig playerConfig = getConfigFile(playerData.getUuid() + ".yml");
         if (playerConfig == null) {
             registerConfigFile(playerData.getUuid() + ".yml");
@@ -134,7 +134,7 @@ public class UserDataManager {
         playerConfig.saveConfig();
     }
 
-    public FileConfiguration getFileConfiguration(PlayerData playerData) {
+    private FileConfiguration getFileConfiguration(PlayerData playerData) {
         return this.getConfigFile(playerData.getUuid() + ".yml").getConfig();
     }
 
@@ -172,7 +172,7 @@ public class UserDataManager {
         return valid;
     }
 
-    public void fixPlayerData(){
+    private void fixPlayerData(){
         for(CustomConfig customConfig : configFiles){
             if(!isValidPlayerData(customConfig.getPath())){
                 String uuid = customConfig.getPath().replace(".yml", "");

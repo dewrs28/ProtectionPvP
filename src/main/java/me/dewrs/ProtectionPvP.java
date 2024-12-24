@@ -1,9 +1,12 @@
 package me.dewrs;
 
+import me.dewrs.Api.ExpansionProtectionPvP;
+import me.dewrs.Api.ProtectionPvPAPI;
 import me.dewrs.Config.ConfigManager;
 import me.dewrs.Config.MessagesManager;
 import me.dewrs.Config.UserDataManager;
 import me.dewrs.Config.ZoneDataManager;
+import me.dewrs.Dependencies.Metrics;
 import me.dewrs.Events.PlayerListener;
 import me.dewrs.Events.WandListener;
 import me.dewrs.Managers.*;
@@ -56,10 +59,15 @@ public class ProtectionPvP extends JavaPlugin {
         } else {
             protocolLibHook.addBlockInteractInterceptionSpigot();
         }
+        ProtectionPvPAPI api = new ProtectionPvPAPI(this);
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
+            new ExpansionProtectionPvP(this).register();
+        }
         regCommands();
         regEvents();
         cacheLocCorner1 = new HashMap<>();
         cacheLocCorner2 = new HashMap<>();
+        Metrics metrics = new Metrics(this,24224);
         Bukkit.getConsoleSender().sendMessage(prefix + ColoredMessage.setColor("&aHas been enabled"));
         Bukkit.getConsoleSender().sendMessage(prefix + ColoredMessage.setColor("&aPlugin created by &edewrs"));
         updateChecker = new UpdateChecker(version);
@@ -76,11 +84,11 @@ public class ProtectionPvP extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage(prefix + ColoredMessage.setColor("&aThanks for using me!"));
     }
 
-    public void regCommands() {
+    private void regCommands() {
         this.getCommand("protectionpvp").setExecutor(new MainCommand(this));
     }
 
-    public void regEvents() {
+    private void regEvents() {
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new PlayerListener(this), this);
         pm.registerEvents(new WandListener(this), this);
@@ -103,7 +111,7 @@ public class ProtectionPvP extends JavaPlugin {
         }
     }
 
-    public boolean isPaperServer(){
+    private boolean isPaperServer(){
         boolean isPaper = false;
         try {
             Class.forName("com.destroystokyo.paper.ParticleBuilder");
@@ -113,7 +121,7 @@ public class ProtectionPvP extends JavaPlugin {
         return isPaper;
     }
 
-    public void manageUpdateChecker(){
+    private void manageUpdateChecker(){
         if (!updateChecker.check().isError()) {
             String latestVersion = updateChecker.check().getLatestVersion();
             if (latestVersion != null) {

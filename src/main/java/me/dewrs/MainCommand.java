@@ -1,5 +1,6 @@
 package me.dewrs;
 
+import me.dewrs.Api.ProtectionPvPAPI;
 import me.dewrs.Enums.CustomSound;
 import me.dewrs.Enums.CustomTitle;
 import me.dewrs.Managers.PlayerDataManager;
@@ -85,7 +86,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    public void subCommandSet(CommandSender sender, String[] args){
+    private void subCommandSet(CommandSender sender, String[] args){
         // /pvp set player true/false
         //      args0 args1 args2
         if(!sender.hasPermission("protectionpvp.admin.set")){
@@ -138,7 +139,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         }
     }
 
-    public void subCommandHelp(CommandSender sender, String[] args){
+    private void subCommandHelp(CommandSender sender, String[] args){
         if(args.length == 1){
             help(sender, 1);
             return;
@@ -154,7 +155,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
     }
 
-    public void subCommandStatus(CommandSender sender, String[] args){
+    private void subCommandStatus(CommandSender sender, String[] args){
         // /pvp status (nick)
         PlayerDataManager playerDataManager = plugin.getPlayerDataManager();
         PlayerData playerData;
@@ -185,7 +186,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(ProtectionPvP.prefix+ColoredMessage.setColor(plugin.getMessagesManager().getProteAlreadyOffOther().replaceAll("%p%", playerData.getName())));
     }
 
-    public void subCommandProteOff(CommandSender sender){
+    private void subCommandProteOff(CommandSender sender){
         PlayerDataManager playerDataManager = plugin.getPlayerDataManager();
         PlayerData playerData = playerDataManager.getPlayerData((Player) sender);
         if(playerData.isProtected()) {
@@ -203,7 +204,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(ProtectionPvP.prefix+ColoredMessage.setColor(plugin.getMessagesManager().getProteAlreadyOff()));
     }
 
-    public void subCommandCreateZone(CommandSender sender, String[] args) {
+    private void subCommandCreateZone(CommandSender sender, String[] args) {
         if (!sender.hasPermission("protectionpvp.admin.wand")) {
             sender.sendMessage(ProtectionPvP.prefix + ColoredMessage.setColor(plugin.getMessagesManager().getNoPermission()));
             return;
@@ -235,7 +236,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(ProtectionPvP.prefix + ColoredMessage.setColor(plugin.getMessagesManager().getZoneCreate()));
     }
 
-    public void subCommandDeleteZone(CommandSender sender, String[] args) {
+    private void subCommandDeleteZone(CommandSender sender, String[] args) {
         if (!sender.hasPermission("protectionpvp.admin.deletezone")) {
             sender.sendMessage(ProtectionPvP.prefix + ColoredMessage.setColor(plugin.getMessagesManager().getNoPermission()));
             return;
@@ -254,7 +255,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(ProtectionPvP.prefix + ColoredMessage.setColor(plugin.getMessagesManager().getZoneDelete()));
     }
 
-    public void subCommandRenameZone(CommandSender sender, String[] args){
+    private void subCommandRenameZone(CommandSender sender, String[] args){
         // /protepvp renamezone (old) (new)
         if(!sender.hasPermission("protectionpvp.admin.renamezone")){
             sender.sendMessage(ProtectionPvP.prefix+ColoredMessage.setColor(plugin.getMessagesManager().getNoPermission()));
@@ -281,7 +282,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
                 .replaceAll("%m1%", oldName).replaceAll("%m2%", newName)));
     }
 
-    public void subCommandWand(CommandSender sender) {
+    private void subCommandWand(CommandSender sender) {
         if (!sender.hasPermission("protectionpvp.admin.wand")) {
             sender.sendMessage(ProtectionPvP.prefix + ColoredMessage.setColor(plugin.getMessagesManager().getNoPermission()));
             return;
@@ -291,19 +292,19 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(ProtectionPvP.prefix + ColoredMessage.setColor(plugin.getMessagesManager().getWandGive()));
     }
 
-    public void subCommandListZones(CommandSender sender) {
+    private void subCommandListZones(CommandSender sender) {
         if (!sender.hasPermission("protectionpvp.admin.listzones")) {
             sender.sendMessage(ProtectionPvP.prefix + ColoredMessage.setColor(plugin.getMessagesManager().getNoPermission()));
             return;
         }
-        ZonesManager zonesManager = plugin.getZonesManager();
+        List<String> zones = ProtectionPvPAPI.getPvPZones();
         StringBuilder listString = new StringBuilder();
         int i = 1;
-        for (ZonePvP zone : zonesManager.getZones()) {
-            if(zonesManager.getZones().size() != i) {
-                listString.append(zone.getName()).append(", ");
+        for (String z : zones) {
+            if(zones.size() != i) {
+                listString.append(z).append(", ");
             }else{
-                listString.append(zone.getName());
+                listString.append(z);
             }
             i++;
         }
@@ -315,7 +316,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(ProtectionPvP.prefix+ColoredMessage.setColor(plugin.getMessagesManager().getZoneListEmpty()));
     }
 
-    public void subCommandSetTpZone(CommandSender sender, String[] args){
+    private void subCommandSetTpZone(CommandSender sender, String[] args){
         if (!sender.hasPermission("protectionpvp.admin.settpzone")) {
             sender.sendMessage(ProtectionPvP.prefix + ColoredMessage.setColor(plugin.getMessagesManager().getNoPermission()));
             return;
@@ -336,7 +337,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         player.sendMessage(ProtectionPvP.prefix+ColoredMessage.setColor(plugin.getMessagesManager().getZoneSetTp()));
     }
 
-    public void subCommandReload(CommandSender sender) {
+    private void subCommandReload(CommandSender sender) {
         if (!sender.hasPermission("protectionpvp.admin.reload")) {
             sender.sendMessage(ProtectionPvP.prefix + ColoredMessage.setColor(plugin.getMessagesManager().getNoPermission()));
             return;
@@ -345,7 +346,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(ProtectionPvP.prefix + ColoredMessage.setColor(plugin.getMessagesManager().getReload()));
     }
 
-    public void help(CommandSender sender, int type){
+    private void help(CommandSender sender, int type){
         if(type == 1){
             List<String> help = plugin.getMessagesManager().getHelpPlayer();
             for(String m : help){

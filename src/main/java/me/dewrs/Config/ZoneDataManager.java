@@ -20,7 +20,7 @@ public class ZoneDataManager {
         loadZones();
     }
 
-    public void loadZones(){
+    private void loadZones(){
         ArrayList<ZonePvP> zones = new ArrayList<>();
         if(getFileConfiguration().getConfigurationSection("pvp_zones") != null) {
             for (String key : getFileConfiguration().getConfigurationSection("pvp_zones").getKeys(false)) {
@@ -53,11 +53,11 @@ public class ZoneDataManager {
         zonesManager.setZones(zones);
     }
 
-    public FileConfiguration getFileConfiguration(){
+    private FileConfiguration getFileConfiguration(){
         return customConfig.getConfig();
     }
 
-    public void saveConfig(){
+    private void saveConfig(){
         this.customConfig.saveConfig();
     }
 
@@ -101,5 +101,4 @@ public class ZoneDataManager {
         this.getFileConfiguration().set("pvp_zones."+zone.getName(), null);
         this.saveConfig();
     }
-
 }

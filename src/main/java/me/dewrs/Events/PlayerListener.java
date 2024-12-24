@@ -1,5 +1,6 @@
 package me.dewrs.Events;
 
+import me.dewrs.Api.ToggleProtectionEvent;
 import me.dewrs.Managers.PlayerDataManager;
 import me.dewrs.Managers.ZonesManager;
 import me.dewrs.Model.PlayerData;
