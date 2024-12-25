@@ -25,7 +25,7 @@ Or you can also:
 <dependency>
   <groupId>com.github.dewrs28</groupId>
   <artifactId>ProtectionPvP</artifactId>
-  <version>1.4</version>
+  <version>1.5</version>
 </dependency>
 ```
 Note: Jitpack also supports dependencies for gradle
